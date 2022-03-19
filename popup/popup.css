@@ -1,11 +1,17 @@
-body {
-    background-color: #222;
-    color: #eee;
-
-    width: 16rem;
-    height: 4rem;
+.ugr-wrapper {
+  width: 180px;
+  padding: 30px 60px;
+  background-color: #b2bec3;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
 }
 
-.special-text {
-    color: red;
+.info {
+  font-size: 12px;
+  font-weight: lighter;
+  padding: 10px 0;
 }
