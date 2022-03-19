@@ -1,19 +1,11 @@
-// This script gets injected into any opened page
-// whose URL matches the pattern defined in the manifest
-// (see "content_script" key).
-// Several foreground scripts can be declared
-// and injected into the same or different pages.
-
-console.log(
-  "This prints to the console of the page (injected only if the page url matched)"
-)
-
 let offset = 0
 let prevLen = 0
 let tmpArr = []
 let i = 0
 let sum = 0
 let process
+
+let photoNumber = 100
 const selection = async () => {
   let photos = Array.from(document.querySelectorAll(".ckGgle"))
   if (i !== 0) {
@@ -33,7 +25,7 @@ const selection = async () => {
   })
   i++
   tmpArr = photos
-  if (sum >= 500) {
+  if (sum >= photoNumber) {
     // click remove
     await deletePhotos()
   }
@@ -45,12 +37,17 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       ? "from a content script:" + sender.tab.url
       : "from the extension"
   )
-  if (request.operation === "START") {
+  console.log(request)
+  if (request?.operation === "START") {
     startProcess()
-  } else if (request.operation === "STOP") {
+    sendResponse({ result: "started" })
+  } else if (request?.operation === "STOP") {
     stopProcess()
+    sendResponse({ result: "stopped" })
+  } else if (request?.photoNumber) {
+    photoNumber = request.photoNumber
+    sendResponse({ result: `photoNumber changed to ${photoNumber} ` })
   }
-  if (request.greeting === "hello") sendResponse({ farewell: "goodbye" })
 })
 
 const startProcess = () => (process = setInterval(() => selection(), 1500))
@@ -73,3 +70,50 @@ const deletePhotos = () => {
     }, 3000)
   })
 }
+
+const html = `
+<div class="ugr-wrapper">
+  <div class="ugr-header">
+    <div class="ugr-header-title">
+      <h1>
+          <span class="ugr-header-title-text">
+            Google Photos Auto Delete
+          </span>
+      </h1>
+    </div>
+  </div>
+  <div class="ugr-content">
+    <div class="ugr-content-body">
+      <div class="ugr-content-body-inner">
+        <p>Eklentiyi kullanmak için, eklenti simgesine tıklayın ve size uygun fotoğraf sayısını seçin</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+    .ugr-wrapper {
+      position: absolute !important;
+      top: 10% !important;
+      right: 5% !important;
+      z-index: 9999;
+      background-color: #4682f4;
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 3px #000000;
+      padding: 10px;
+      color: #fff;
+      font-family: sans-serif;
+      font-size: 14px;
+      font-weight: bold;
+      text-align: center;
+
+    }
+</style>
+`
+
+const div = document.createElement("div")
+div.innerHTML = html
+document.body.appendChild(div)

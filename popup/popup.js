@@ -8,9 +8,24 @@ window.addEventListener("DOMContentLoaded", (event) => {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       chrome.tabs.sendMessage(
         tabs[0].id,
-        { greeting: "hello", operation: start ? "START" : "STOP" },
+        { operation: start ? "START" : "STOP" },
         function (response) {
-          console.log(response.farewell)
+          console.log(response)
+        }
+      )
+    })
+  }
+
+  const slctBox = document.getElementById("photoNumber")
+  slctBox.value = Number(localStorage.getItem("photoNumber") || 100)
+  slctBox.onchange = function () {
+    localStorage.setItem("photoNumber", slctBox.value)
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      chrome.tabs.sendMessage(
+        tabs[0].id,
+        { photoNumber: slctBox.value },
+        function (response) {
+          console.log(response)
         }
       )
     })

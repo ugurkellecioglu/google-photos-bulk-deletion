@@ -14,7 +14,7 @@
     "default_title": "Chrome Addon v3 Starter",
     "default_popup": "popup/popup.html"
   },
-  "permissions": ["tabs", "activeTab"],
+  "permissions": ["tabs", "activeTab", "storage"],
   "host_permissions": ["*://*/*"],
   "background": {
     "service_worker": "service-worker.js"
