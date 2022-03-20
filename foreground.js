@@ -5,7 +5,7 @@ let i = 0
 let sum = 0
 let process
 
-let photoNumber = 100
+let photoNumber = 25
 const selection = async () => {
   let photos = Array.from(document.querySelectorAll(".ckGgle"))
   if (i !== 0) {
@@ -25,6 +25,8 @@ const selection = async () => {
   })
   i++
   tmpArr = photos
+  console.log("sum is", sum)
+  console.log("photoNumber is", photoNumber)
   if (sum >= photoNumber) {
     // click remove
     await deletePhotos()
@@ -42,10 +44,12 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     startProcess()
     sendResponse({ result: "started" })
   } else if (request?.operation === "STOP") {
+    console.log("stopping")
     stopProcess()
     sendResponse({ result: "stopped" })
   } else if (request?.photoNumber) {
     photoNumber = request.photoNumber
+    document.querySelector("#photoNumber").innerText = photoNumber
     sendResponse({ result: `photoNumber changed to ${photoNumber} ` })
   }
 })
@@ -65,6 +69,7 @@ const deletePhotos = () => {
     setTimeout(() => {
       console.log("deleted..")
       startProcess()
+      document.querySelector("#deletedPhotos").innerText = sum
       sum = 0
       resolve("deleted")
     }, 3000)
@@ -85,7 +90,23 @@ const html = `
   <div class="ugr-content">
     <div class="ugr-content-body">
       <div class="ugr-content-body-inner">
-        <p>Eklentiyi kullanmak için, eklenti simgesine tıklayın ve size uygun fotoğraf sayısını seçin</p>
+        <ul>
+          <li>
+            Click the icon at the top right
+          </li>
+          <li>
+            Select delete every ... photos
+          </li>
+          <li>
+            Click <span id="startText">START</span> button
+          </li>
+        </ul>
+      </div>
+      <div class="ugr-content-body-footer">
+        <span id="settingText">Settings</span>
+        <hr />
+        <div><p>Delete every <span id="photoNumber">25</span> photos.</p></div>
+        <div><span id="deletedPhotos">0</span> photos deleted.</div>
       </div>
     </div>
   </div>
@@ -94,15 +115,14 @@ const html = `
 <style>
     .ugr-wrapper {
       position: absolute !important;
-      top: 10% !important;
-      right: 5% !important;
+      bottom: 2% !important;
+      right: 2% !important;
       z-index: 9999;
-      background-color: #4682f4;
+      background-color: rgba(70, 130, 244, 0.95)      ;
       position: fixed;
       width: 300px;
       height: 300px;
-      border-radius: 10px;
-      box-shadow: 0px 0px 3px #000000;
+      border-radius: 20px;
       padding: 10px;
       color: #fff;
       font-family: sans-serif;
@@ -111,6 +131,32 @@ const html = `
       text-align: center;
 
     }
+    .ugr-content-body-inner ul {
+      list-style: none;
+      margin: 0;
+      text-align: left;
+    }
+    .ugr-content-body-inner li {
+      margin: 10px 0;
+      font-size: 14px;
+      font-weight: normal;
+    }
+    .ugr-content-body-footer {
+      margin-top: 20px;
+    }
+    #settingText {
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    #startText {
+      color: #fff;
+      background-color: #2196f3;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
 </style>
 `
 
