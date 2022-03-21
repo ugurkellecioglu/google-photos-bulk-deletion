@@ -10,10 +10,10 @@ window.addEventListener("DOMContentLoaded", (event) => {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       chrome.tabs.sendMessage(
         tabs[0].id,
-        { operation: start ? "START" : "STOP" },
-        function (response) {
-          console.log(response)
-        }
+        { operation: start ? "START" : "STOP" }
+        // function (response) {
+        //   console.log(response)
+        // }
       )
     })
   }
@@ -25,10 +25,10 @@ window.addEventListener("DOMContentLoaded", (event) => {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       chrome.tabs.sendMessage(
         tabs[0].id,
-        { photoNumber: slctBox.value },
-        function (response) {
-          console.log(response)
-        }
+        { photoNumber: slctBox.value }
+        // function (response) {
+        //   console.log(response)
+        // }
       )
     })
   }
